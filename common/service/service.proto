@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message RecordRequest {
+    // Header needs to be sent only with the first request. If sent in subsequent
+    // requests it should match what was initially sent.
+    message Header {
+        int32 num_channels = 1;
+        float sample_rate = 2;
+    };
+    Header header = 1;
+    repeated float sample = 2 [packed=true];
+}
+
+message RecordResponse {
+}
+
+service Recorder {
+    rpc Record(stream RecordRequest) returns (stream RecordResponse) {}
+}
