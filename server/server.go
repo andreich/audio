@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"path"
 	"sync"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 var (
 	bind        = flag.String("bind", "localhost:9876", "Address to bind to.")
 	certificate = flag.String("cert", "server.pem", "What certificate to use to connect to the server.")
+	dir         = flag.String("dir", ".", "Directory to write the recordings.")
 )
 
 type server struct {
@@ -79,7 +81,7 @@ func main() {
 	}
 
 	s := grpc.NewServer(grpc.Creds(creds))
-	service.RegisterRecorderServer(s, &server{prefix: "rec"})
+	service.RegisterRecorderServer(s, &server{prefix: path.Join(*dir, "rec")})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("could not serve: %v", err)
 	}
